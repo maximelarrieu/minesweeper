@@ -372,6 +372,7 @@ const ADJACENT_SYMBOLS = ['', '1', '2', '3', '4', '5', '6', '7', '8'];
 function renderBoard(container, board, callbacks) {
   container.innerHTML = '';
   const cols = board[0].length;
+  container.style.setProperty('--cols', String(cols));
   container.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
 
   for (let row = 0; row < board.length; row++) {
@@ -580,6 +581,10 @@ function initGame() {
       status: state.status,
     });
   }
+
+  // Un clic droit dans les interstices ou le padding du plateau ne doit pas
+  // ouvrir le menu natif (les cellules gèrent déjà le leur).
+  boardContainer.addEventListener('contextmenu', (event) => event.preventDefault());
 
   difficultySelect.addEventListener('change', startNewGame);
   resetButton.addEventListener('click', startNewGame);

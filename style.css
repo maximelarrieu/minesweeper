@@ -100,8 +100,13 @@ h1 {
 }
 
 /* Plateau : grille générée dynamiquement en JS (grid-template-columns
-   dépend de Difficulty.cols), le nombre de lignes suit le contenu. */
+   dépend de Difficulty.cols), le nombre de lignes suit le contenu.
+   --cols est posé par le JS : la taille de case se réduit pour que la
+   grille tienne dans la largeur de la fenêtre (padding body 24px + padding
+   plateau 16px + ~16px de barre de défilement verticale + gaps), sans
+   descendre sous 20px ; au-delà, overflow: auto prend le relais. */
 .board {
+  --cell-size: clamp(20px, calc((100vw - 56px - (var(--cols, 9) - 1) * 2px) / var(--cols, 9)), 32px);
   display: grid;
   gap: 2px;
   padding: 8px;
