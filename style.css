@@ -1,0 +1,67 @@
+/* Démineur — squelette de styles.
+   Sélecteurs et classes définis par l'architecture ; règles visuelles
+   (couleurs, espacements, thème) à implémenter par le rôle suivant. */
+
+/* Layout général */
+#app {
+}
+
+.status-bar {
+}
+
+.counter {
+}
+
+#reset-button {
+}
+
+.controls {
+}
+
+/* Plateau : grille générée dynamiquement en JS (grid-template-columns
+   dépend de Difficulty.cols), le nombre de lignes suit le contenu. */
+.board {
+  display: grid;
+}
+
+/* Cellule : états ajoutés dynamiquement via classList
+   (revealed, flagged, mine, mine-hit, adjacent-1 .. adjacent-8) */
+.cell {
+}
+
+.cell.revealed {
+}
+
+.cell.flagged {
+}
+
+.cell.mine {
+}
+
+.cell.mine-hit {
+}
+
+.cell.adjacent-1 {
+}
+.cell.adjacent-2 {
+}
+.cell.adjacent-3 {
+}
+.cell.adjacent-4 {
+}
+.cell.adjacent-5 {
+}
+.cell.adjacent-6 {
+}
+.cell.adjacent-7 {
+}
+.cell.adjacent-8 {
+}
+
+/* Overlay fin de partie */
+.end-overlay {
+}
+
+.end-overlay.hidden {
+  display: none;
+}

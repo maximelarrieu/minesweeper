@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Démineur</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <h1>Démineur</h1>
+
+    <div class="status-bar">
+      <div id="mine-counter" class="counter">000</div>
+      <button id="reset-button" type="button" aria-label="Recommencer">🙂</button>
+      <div id="timer" class="counter">000</div>
+    </div>
+
+    <div class="controls">
+      <label for="difficulty-select">Difficulté</label>
+      <select id="difficulty-select">
+        <option value="beginner">Débutant (9x9, 10 mines)</option>
+        <option value="intermediate">Intermédiaire (16x16, 40 mines)</option>
+        <option value="expert">Expert (30x16, 99 mines)</option>
+      </select>
+    </div>
+
+    <div id="board" class="board" role="grid" aria-label="Grille du démineur"></div>
+
+    <div id="end-overlay" class="end-overlay hidden" role="status">
+      <p id="end-message"></p>
+      <button id="end-overlay-restart" type="button">Rejouer</button>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
