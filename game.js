@@ -588,4 +588,24 @@ function initGame() {
   startNewGame();
 }
 
-document.addEventListener('DOMContentLoaded', initGame);
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', initGame);
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    getDifficultyPreset,
+    createEmptyBoard,
+    getNeighborCoords,
+    placeMines,
+    computeAdjacency,
+    revealCell,
+    toggleFlag,
+    checkWinCondition,
+    createGame,
+    revealAllMines,
+    handleCellReveal,
+    handleCellFlag,
+    resetGame,
+  };
+}
