@@ -2,11 +2,17 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { createFakeDocument } = require('./helpers/dom-stub.js');
+
+global.document = createFakeDocument();
+
 const {
   createGame,
   handleCellReveal,
   handleCellFlag,
   checkWinCondition,
+  getDifficultyPreset,
+  renderBoard,
 } = require('../game.js');
 
 test('premier clic sûr : la case cliquée et ses voisines ne contiennent jamais de mine', () => {
@@ -95,4 +101,68 @@ test('un flag empêche la révélation tant qu\'il n\'est pas retiré', () => {
   state = handleCellFlag(state, 2, 2);
   assert.equal(state.board[2][2].isFlagged, false);
   assert.equal(state.flagsPlaced, 0);
+});
+
+test('renderBoard peuple #board avec une cellule par case, pour chaque difficulté', () => {
+  for (const name of ['beginner', 'intermediate', 'expert']) {
+    const difficulty = getDifficultyPreset(name);
+    const state = createGame(difficulty);
+    const container = document.createElement('div');
+
+    renderBoard(container, state.board, { onReveal() {}, onFlag() {} });
+
+    assert.equal(
+      container.children.length,
+      difficulty.rows * difficulty.cols,
+      `${name} : ${difficulty.rows}x${difficulty.cols} attendu`
+    );
+  }
+});
+
+test('renderBoard vide le conteneur avant de le repeupler (pas d\'accumulation sur un changement de difficulté)', () => {
+  const difficulty = { rows: 3, cols: 3, mines: 1 };
+  const state = createGame(difficulty);
+  const container = document.createElement('div');
+
+  renderBoard(container, state.board, { onReveal() {}, onFlag() {} });
+  renderBoard(container, state.board, { onReveal() {}, onFlag() {} });
+
+  assert.equal(container.children.length, 9);
+});
+
+test('clic gauche sur une cellule déclenche onReveal avec les coordonnées de cette cellule', () => {
+  const difficulty = { rows: 3, cols: 3, mines: 1 };
+  const state = createGame(difficulty);
+  const container = document.createElement('div');
+  const calls = [];
+
+  renderBoard(container, state.board, {
+    onReveal: (row, col) => calls.push(['reveal', row, col]),
+    onFlag: (row, col) => calls.push(['flag', row, col]),
+  });
+
+  const button = container.querySelector('.cell[data-row="1"][data-col="2"]');
+  assert.ok(button, 'la cellule (1,2) doit exister dans le DOM rendu');
+
+  button.trigger('click');
+
+  assert.deepEqual(calls, [['reveal', 1, 2]]);
+});
+
+test('clic droit sur une cellule déclenche onFlag (pas onReveal) et bloque le menu contextuel natif', () => {
+  const difficulty = { rows: 3, cols: 3, mines: 1 };
+  const state = createGame(difficulty);
+  const container = document.createElement('div');
+  const calls = [];
+
+  renderBoard(container, state.board, {
+    onReveal: (row, col) => calls.push(['reveal', row, col]),
+    onFlag: (row, col) => calls.push(['flag', row, col]),
+  });
+
+  const button = container.querySelector('.cell[data-row="0"][data-col="1"]');
+  const event = button.trigger('contextmenu');
+
+  assert.equal(event.defaultPrevented, true, 'le menu contextuel natif doit être bloqué');
+  assert.deepEqual(calls, [['flag', 0, 1]]);
 });

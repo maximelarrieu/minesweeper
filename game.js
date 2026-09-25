@@ -612,5 +612,6 @@ if (typeof module !== 'undefined' && module.exports) {
     handleCellReveal,
     handleCellFlag,
     resetGame,
+    renderBoard,
   };
 }
