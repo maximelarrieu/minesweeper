@@ -1,13 +1,19 @@
-/* Démineur — styles visuels. */
+/* Démineur — styles visuels (thème néon / sci-fi). */
 
 :root {
   --cell-size: 32px;
-  --bg: #1e2530;
-  --panel: #2a3342;
-  --border-light: #46536a;
-  --border-dark: #131822;
-  --text: #e8ecf1;
-  --accent: #4f8cff;
+  --bg: #04060f;
+  --panel: #0b1022;
+  --border-light: #1d6f86;
+  --border-dark: #02030a;
+  --text: #d6f6ff;
+  --accent: #00e5ff;
+  --accent-2: #ff2bd6;
+  --danger: #ff1744;
+  --glow-cyan: 0 0 8px rgba(0, 229, 255, 0.55);
+  --glow-magenta: 0 0 8px rgba(255, 43, 214, 0.55);
+  --font-ui: 'Orbitron', 'Eurostile', 'Bank Gothic', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-digital: 'Share Tech Mono', 'Consolas', 'Courier New', ui-monospace, monospace;
 }
 
 * {
@@ -21,15 +27,22 @@ body {
   align-items: flex-start;
   justify-content: center;
   padding: 24px 12px;
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 43, 214, 0.12), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(0, 229, 255, 0.1), transparent 60%),
+    var(--bg);
   color: var(--text);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-ui);
 }
 
 h1 {
   text-align: center;
   margin: 0 0 16px;
   font-size: 1.5rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 0 6px var(--accent), 0 0 18px var(--accent-2);
 }
 
 /* Layout général */
@@ -50,17 +63,24 @@ h1 {
   padding: 10px 16px;
   background: var(--panel);
   border-radius: 8px;
-  box-shadow: inset 0 0 0 2px var(--border-dark);
+  box-shadow:
+    inset 0 0 0 1px var(--border-light),
+    0 0 14px rgba(0, 229, 255, 0.35),
+    inset 0 0 18px rgba(0, 229, 255, 0.12);
 }
 
+/* Afficheur digital */
 .counter {
-  font-family: 'Consolas', 'Courier New', monospace;
+  font-family: var(--font-digital);
   font-size: 1.4rem;
   font-weight: bold;
-  color: #ff5c5c;
+  letter-spacing: 0.1em;
+  color: var(--danger);
+  text-shadow: 0 0 4px var(--danger), 0 0 12px var(--danger);
   background: #000;
   padding: 4px 8px;
   border-radius: 4px;
+  box-shadow: inset 0 0 8px rgba(255, 23, 68, 0.35), 0 0 8px rgba(255, 23, 68, 0.3);
   min-width: 3ch;
   text-align: center;
 }
@@ -71,13 +91,16 @@ h1 {
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  border: 2px solid var(--border-light);
+  border: 2px solid var(--accent);
   background: var(--panel);
+  box-shadow: var(--glow-cyan), inset 0 0 8px rgba(0, 229, 255, 0.25);
   cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
 }
 
 #reset-button:hover {
-  background: #35405280;
+  border-color: var(--accent-2);
+  box-shadow: var(--glow-magenta), inset 0 0 10px rgba(255, 43, 214, 0.3);
 }
 
 #reset-button:active {
@@ -89,14 +112,27 @@ h1 {
   align-items: center;
   gap: 8px;
   font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 #difficulty-select {
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--accent);
   background: var(--panel);
   color: var(--text);
+  font-family: var(--font-digital);
+  box-shadow: var(--glow-cyan);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#difficulty-select:hover,
+#difficulty-select:focus-visible {
+  border-color: var(--accent-2);
+  box-shadow: var(--glow-magenta);
+  outline: none;
 }
 
 /* Plateau : grille générée dynamiquement en JS (grid-template-columns
@@ -104,7 +140,9 @@ h1 {
    --cols est posé par le JS : la taille de case se réduit pour que la
    grille tienne dans la largeur de la fenêtre (padding body 24px + padding
    plateau 16px + ~16px de barre de défilement verticale + gaps), sans
-   descendre sous 20px ; au-delà, overflow: auto prend le relais. */
+   descendre sous 20px ; au-delà, overflow: auto prend le relais.
+   La lueur passe par box-shadow (hors mise en page) : padding et gap
+   restent à 8px / 2px, constantes de la formule. */
 .board {
   --cell-size: clamp(20px, calc((100vw - 56px - (var(--cols, 9) - 1) * 2px) / var(--cols, 9)), 32px);
   display: grid;
@@ -112,6 +150,10 @@ h1 {
   padding: 8px;
   background: var(--border-dark);
   border-radius: 8px;
+  box-shadow:
+    0 0 0 1px var(--accent-2),
+    0 0 16px rgba(255, 43, 214, 0.45),
+    inset 0 0 14px rgba(255, 43, 214, 0.18);
   max-width: 100%;
   overflow: auto;
 }
@@ -124,54 +166,85 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-digital);
   font-size: calc(var(--cell-size) * 0.5);
   font-weight: bold;
   padding: 0;
   border: none;
   border-radius: 3px;
-  background: #3c4a60;
+  background: #0f1d3a;
   box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.15),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.3);
+    inset 0 0 0 1px rgba(0, 229, 255, 0.45),
+    inset 0 0 6px rgba(0, 229, 255, 0.2);
   cursor: pointer;
   user-select: none;
   color: var(--text);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cell:hover:not(.revealed) {
-  background: #475670;
+  background: #16305c;
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    inset 0 0 10px rgba(0, 229, 255, 0.55);
 }
 
 .cell:active:not(.revealed) {
-  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.3);
+  background: #0a1530;
+  box-shadow: inset 0 0 0 1px var(--accent-2);
 }
 
 .cell.revealed {
-  background: #262e3b;
-  box-shadow: inset 0 0 0 1px var(--border-dark);
+  background: #060a16;
+  box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.1);
   cursor: default;
+  animation: cell-reveal 0.2s ease-out;
 }
 
 .cell.flagged {
-  background: #3c4a60;
+  background: #2a0f3a;
+  box-shadow:
+    inset 0 0 0 1px var(--accent-2),
+    inset 0 0 8px rgba(255, 43, 214, 0.5);
 }
 
+/* Glow statique seulement : la pulsation est réservée à .mine-hit */
 .cell.mine {
-  background: #4a2f2f;
+  background: #3a0a16;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 23, 68, 0.7),
+    inset 0 0 8px rgba(255, 23, 68, 0.55);
 }
 
+/* Après .mine et avec une spécificité au moins égale : toujours prioritaire */
+.cell.mine.mine-hit,
 .cell.mine-hit {
-  background: #c0392b;
+  background: var(--danger);
+  box-shadow:
+    inset 0 0 0 2px #fff,
+    inset 0 0 10px rgba(255, 255, 255, 0.6),
+    0 0 14px var(--danger);
+  animation: mine-pulse 0.9s ease-in-out infinite alternate;
 }
 
-.cell.adjacent-1 { color: #4f8cff; }
-.cell.adjacent-2 { color: #4caf50; }
-.cell.adjacent-3 { color: #ff5c5c; }
-.cell.adjacent-4 { color: #9b59b6; }
-.cell.adjacent-5 { color: #e67e22; }
-.cell.adjacent-6 { color: #1abc9c; }
-.cell.adjacent-7 { color: #ecf0f1; }
-.cell.adjacent-8 { color: #95a5a6; }
+.cell.adjacent-1 { color: #00b0ff; text-shadow: 0 0 5px #00b0ff; }
+.cell.adjacent-2 { color: #39ff14; text-shadow: 0 0 5px #39ff14; }
+.cell.adjacent-3 { color: #ff3d5a; text-shadow: 0 0 5px #ff3d5a; }
+.cell.adjacent-4 { color: #b388ff; text-shadow: 0 0 5px #b388ff; }
+.cell.adjacent-5 { color: #ff9100; text-shadow: 0 0 5px #ff9100; }
+.cell.adjacent-6 { color: #1de9b6; text-shadow: 0 0 5px #1de9b6; }
+.cell.adjacent-7 { color: #ff4fd8; text-shadow: 0 0 5px #ff4fd8; }
+.cell.adjacent-8 { color: #ffee00; text-shadow: 0 0 5px #ffee00; }
+
+@keyframes cell-reveal {
+  from { filter: brightness(2.2); }
+  to { filter: brightness(1); }
+}
+
+@keyframes mine-pulse {
+  from { box-shadow: inset 0 0 0 2px #fff, inset 0 0 6px rgba(255, 255, 255, 0.4), 0 0 6px var(--danger); }
+  to { box-shadow: inset 0 0 0 2px #fff, inset 0 0 14px rgba(255, 255, 255, 0.8), 0 0 20px var(--danger); }
+}
 
 /* Overlay fin de partie */
 .end-overlay {
@@ -182,7 +255,7 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(2, 3, 10, 0.7);
   z-index: 10;
 }
 
@@ -194,22 +267,43 @@ h1 {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--text);
+  text-shadow: 0 0 8px var(--accent);
   margin: 0;
   padding: 16px 24px;
-  background: var(--panel);
+  background: rgba(11, 16, 34, 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--accent);
   border-radius: 8px;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.45), inset 0 0 16px rgba(0, 229, 255, 0.15);
 }
 
 #end-overlay-restart {
   padding: 10px 20px;
+  font-family: var(--font-ui);
   font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   border-radius: 6px;
-  border: none;
-  background: var(--accent);
-  color: white;
+  border: 2px solid var(--accent-2);
+  background: rgba(255, 43, 214, 0.15);
+  color: #fff;
+  text-shadow: 0 0 6px var(--accent-2);
+  box-shadow: var(--glow-magenta), inset 0 0 8px rgba(255, 43, 214, 0.3);
   cursor: pointer;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 #end-overlay-restart:hover {
-  filter: brightness(1.1);
+  background: rgba(255, 43, 214, 0.35);
+  box-shadow: 0 0 18px var(--accent-2), inset 0 0 10px rgba(255, 43, 214, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
